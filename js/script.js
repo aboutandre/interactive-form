@@ -5,6 +5,7 @@ const tShirtColors = document.getElementById('colors-js-puns');
 const tShirtDesignSelection = document.getElementById('design');
 const tShirtColorsTemplate = tShirtColors.innerHTML;
 
+const activities = document.getElementsByClassName('activities')[0];
 const activityConference = document.getElementsByName('all')[0];
 const activityJSFrameworks = document.getElementsByName('js-frameworks')[0];
 const activityJSLibs = document.getElementsByName('js-libs')[0];
@@ -12,6 +13,11 @@ const activityExpress = document.getElementsByName('express')[0];
 const activityNode = document.getElementsByName('node')[0];
 const activityBuildTools = document.getElementsByName('build-tools')[0];
 const activityNPM = document.getElementsByName('npm')[0];
+
+const activitiesListener = activities.getElementsByTagName('INPUT');
+const sumContainer = document.createElement('div');
+
+console.log(activitiesListener);
 
 // Set focus on the name input field
 const initialFocus = function () {
@@ -35,14 +41,13 @@ const initializeTshirtColors = function () {
     tShirtColors.innerHTML = tShirtColorsTemplate;
 };
 
-const parallelTracks = function(firstTrack, secondTrack) {
-    firstTrack.onchange = function() {
+const parallelTracks = function (firstTrack, secondTrack) {
+    firstTrack.onchange = function () {
         this.checked ? (secondTrack.disabled = true) : (secondTrack.disabled = false);
     }
-    secondTrack.onchange = function() {
+    secondTrack.onchange = function () {
         this.checked ? (firstTrack.disabled = true) : (firstTrack.disabled = false);
     }
-
 }
 
 jobTitleSelection.addEventListener('change', function () {
@@ -79,9 +84,30 @@ tShirtDesignSelection.addEventListener('change', function () {
     }
 });
 
+const appendSum = function(totalPrice) {
+    sumContainer.innerHTML = '';
+    const sum = `<h3 class="total-sum">Total: $${totalPrice}</h3>`
+    sumContainer.innerHTML = sum;
+};
+
+activities.addEventListener('change', function () {
+    let price = 0;
+    if (activityConference.checked) {
+        price += 200;
+    }
+    for (let i = 1; activitiesListener.length > i; i++) {
+        if (activitiesListener[i].checked) {
+            price += 100;
+        }
+    }
+    appendSum(price);
+});
+
+
 // We initialize all our functions
 window.onload = initialFocus();
 hideElement(otherJobTitle);
 hideElement(tShirtColors);
 parallelTracks(activityJSFrameworks, activityExpress);
 parallelTracks(activityJSLibs, activityNode);
+activities.appendChild(sumContainer);
