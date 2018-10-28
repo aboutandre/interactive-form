@@ -5,3 +5,7 @@
 .is-visible {
 	display: block;
 }
+
+.total-sum {
+    text-align: right;
+}
