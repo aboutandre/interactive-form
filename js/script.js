@@ -20,7 +20,10 @@ const activityBuildTools = document.getElementsByName('build-tools')[0];
 const activityNPM = document.getElementsByName('npm')[0];
 
 const activitiesListener = activities.getElementsByTagName('INPUT');
-const sumContainer = document.createElement('div');
+const createSumContainer = document.createElement('div');
+createSumContainer.id = 'sum-container';
+
+const submitButton = document.querySelectorAll('[type=submit]')[0];
 
 console.log(activitiesListener);
 
@@ -90,9 +93,9 @@ tShirtDesignSelection.addEventListener('change', function () {
 });
 
 const appendSum = function (totalPrice) {
-    sumContainer.innerHTML = '';
+    createSumContainer.innerHTML = '';
     const sum = `<h3 class="total-sum">Total: $${totalPrice}</h3>`
-    sumContainer.innerHTML = sum;
+    createSumContainer.innerHTML = sum;
 };
 
 activities.addEventListener('change', function () {
@@ -106,6 +109,7 @@ activities.addEventListener('change', function () {
         }
     }
     appendSum(price);
+    validateActivities();
 });
 
 const defaultPayment = function () {
@@ -138,7 +142,7 @@ const errorMessage = function (errorField, errorText) {
 };
 
 const removeErrorMessage = function (inputId) {
-    inputId.parentNode.removeChild(inputId.nextSibling)
+    inputId.parentNode.removeChild(inputId.nextElementSibling)
 }
 
 nameField.addEventListener('blur', function () {
@@ -173,6 +177,32 @@ emailField.addEventListener('blur', function () {
     }
 });
 
+const validateActivities = function () {
+    const sumContainer = document.getElementById('sum-container');
+    let anyChecked = false;
+    for (let i = 0; activitiesListener.length > i; i++) {
+        if (activitiesListener[i].checked === true) {
+            anyChecked = true;
+        }
+    }
+    if (anyChecked === false) {
+        if (sumContainer.nextElementSibling !== null) {
+            return
+        }
+        errorMessage(sumContainer, 'Please select at least one activity');
+    } else {
+        if (sumContainer.nextElementSibling === null) {
+            return
+        }
+        removeErrorMessage(sumContainer);
+    }
+};
+
+submitButton.addEventListener('click', function (event) {
+    validateActivities();
+    event.preventDefault();
+});
+
 // We initialize all our functions
 window.onload = initialFocus();
 window.onload = defaultPayment();
@@ -180,4 +210,4 @@ hideElement(otherJobTitle);
 hideElement(tShirtColors);
 parallelTracks(activityJSFrameworks, activityExpress);
 parallelTracks(activityJSLibs, activityNode);
-activities.appendChild(sumContainer);
+activities.appendChild(createSumContainer);
