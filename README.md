@@ -8,4 +8,5 @@ All work here has been done by me, except the initial commit that was provided b
 ## Dependencies
 
 [Normalize](github.com/necolas/normalize.css)
+
 [Bootstrap 4](https://getbootstrap.com)
