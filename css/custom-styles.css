@@ -9,3 +9,19 @@
 .total-sum {
     text-align: right;
 }
+
+.input-error {
+	border-color: #dc3545;
+}
+
+.input-validated {
+	border-color: #28a745;
+}
+
+.error-message {
+	background-color: #dc3545;
+	border-radius: 0.25rem;
+	color: white;
+	margin-top: 0;
+	padding: 0.5rem; 
+}

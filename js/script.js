@@ -129,6 +129,32 @@ paymentMethod.addEventListener('change', function () {
     }
 });
 
+const errorMessage = function(errorField, errorText) {
+    const textContent = document.createElement('p');
+    textContent.innerHTML = errorText;
+    textContent.classList.add('error-message');
+    errorField.parentNode.insertBefore(textContent, errorField.nextSibling);
+};
+
+const removeErrorMessage = function(inputId) {
+    inputId.parentNode.removeChild(inputId.nextSibling)
+}
+
+nameField.addEventListener('blur', function() {
+    if (nameField.value === '' || nameField.value === null) {
+        if (this.nextElementSibling.classList.contains('error-message')) {
+            return  
+        }
+        this.classList.remove('input-validated');
+        this.classList.add('input-error');
+        errorMessage(nameField, 'Please add a name');
+    } else {
+        this.classList.remove('input-error');
+        this.classList.add('input-validated');
+        removeErrorMessage(this);
+    }
+});
+
 // We initialize all our functions
 window.onload = initialFocus();
 window.onload = defaultPayment();
