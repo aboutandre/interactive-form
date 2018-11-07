@@ -26,6 +26,10 @@ const activitiesListener = activities.getElementsByTagName('INPUT');
 const createSumContainer = document.createElement('div');
 createSumContainer.id = 'sum-container';
 
+const activitiesErrorContainer = document.createElement('div');
+activitiesErrorContainer.id = 'activities-error';
+activities.appendChild(activitiesErrorContainer);
+
 const submitButton = document.querySelectorAll('[type=submit]')[0];
 
 console.log(activitiesListener);
@@ -128,7 +132,7 @@ const hidePaymentMethods = function () {
 }
 
 paymentMethod.addEventListener('change', function () {
-     if (this.value === 'credit card') {
+    if (this.value === 'credit card') {
         defaultPayment();
     } else if (this.value === 'paypal') {
         hidePaymentMethods();
@@ -149,50 +153,28 @@ const errorMessage = function (errorField, errorText) {
 
 const removeErrorMessage = function (errorField) {
     const errorMessageId = errorField.id + '-error';
-    const errorMessage = document.getElementById(errorMessageId); 
+    const errorMessage = document.getElementById(errorMessageId);
     errorField.parentNode.removeChild(errorMessage);
 }
 
-nameField.addEventListener('blur', function () {
+const validateName = function () {
     if (nameField.value === '' || nameField.value === null) {
-        if (nameField.nextElementSibling.classList.contains('error-message')) {
-            return
-        }
-        nameField.classList.remove('input-validated');
-        nameField.classList.add('input-error');
-        errorMessage(nameField, 'Please add a name.');
+        validate(false, nameField, 'empty-field', 'Please add a name.');
     } else {
-        if (!nameField.nextElementSibling.classList.contains('error-message')) {
-            return
-        }
-        nameField.classList.remove('input-error');
-        nameField.classList.add('input-validated');
-        removeErrorMessage(nameField);
+        validate(true, nameField);
     }
-});
+};
 
-emailField.addEventListener('blur', function () {
+const validateEmail = function () {
     isValid = emailField.checkValidity();
-
     if (!isValid || emailField.value === '') {
-        if (emailField.nextElementSibling.classList.contains('error-message')) {
-            return
-        }
-        emailField.classList.remove('input-validated');
-        emailField.classList.add('input-error');
-        errorMessage(emailField, 'Please add a valid email.');
+        validate(false, emailField, 'invalid-format', 'Please add a valid email.');
     } else {
-        if (!emailField.nextElementSibling.classList.contains('error-message')) {
-            return
-        }
-        emailField.classList.remove('input-error');
-        emailField.classList.add('input-validated');
-        removeErrorMessage(emailField);
+        validate(true, emailField);
     }
-});
+};
 
 const validateActivities = function () {
-    const sumContainer = document.getElementById('sum-container');
     let anyChecked = false;
     for (let i = 0; activitiesListener.length > i; i++) {
         if (activitiesListener[i].checked === true) {
@@ -200,15 +182,9 @@ const validateActivities = function () {
         }
     }
     if (anyChecked === false) {
-        if (sumContainer.nextElementSibling !== null) {
-            return
-        }
-        errorMessage(sumContainer, 'Please select at least one activity');
+        validate(false, activitiesErrorContainer, 'missing-activity', 'Please select at least one activity');
     } else {
-        if (sumContainer.nextElementSibling === null) {
-            return
-        }
-        removeErrorMessage(sumContainer);
+        validate(true, activitiesErrorContainer);
     }
 };
 
@@ -222,70 +198,62 @@ const validatePayment = function () {
 
 const validateCCNumber = function () {
     if (ccNumber.value.length <= 0) {
-        if (ccNumber.nextElementSibling !== null) {
-            return
-        }
-        ccNumber.classList.add('input-error');
-        ccNumber.classList.remove('input-validated');
-        errorMessage(ccNumber, 'Please enter a credit card number.');
-    } else if (13 > ccNumber.value.length || ccNumber.value.length > 16) {
-        if (ccNumber.nextElementSibling !== null) {
-            return
-        }
-        ccNumber.classList.add('input-error');
-        ccNumber.classList.remove('input-validated');
-        errorMessage(ccNumber, 'Please add a card with 13 to 16 digits.');
+        validate(false, ccNumber, 'empty-field', 'Please enter a credit card number.');
+    } else if (13 >= ccNumber.value.length || ccNumber.value.length >= 16) {
+        validate(false, ccNumber, 'wrong-length', 'Please add a card with 13 to 16 digits.');
     } else {
-        if (ccNumber.nextElementSibling === null) {
-            return
-        }
-        ccNumber.classList.remove('input-error');
-        ccNumber.classList.add('input-validated');
-        removeErrorMessage(ccNumber);
+        validate(true, ccNumber);
+    }
+};
+
+const validate = function (passed, evaluatedElement, errorName = 0, errorMessage = 0) {
+    // We need to remove all previous errors from this element
+    const evaluatedElementId = evaluatedElement.id;
+    const evaluatedElementErrors = document.querySelectorAll('*[class*="' + evaluatedElementId + '-"]');
+    evaluatedElementErrors.forEach(function (element) {
+        element.parentNode.removeChild(element);
+    });
+    if (passed) {
+        evaluatedElement.classList.remove('input-error');
+        evaluatedElement.classList.add('input-validated');
+    } else {
+        evaluatedElement.classList.add('input-error');
+        evaluatedElement.classList.remove('input-validated');
+        // Then we create the error that we need
+        const errorContainer = document.createElement('p');
+        errorContainer.classList.add(evaluatedElementId + '-' + errorName);
+        errorContainer.innerHTML = errorMessage;
+        errorContainer.classList.add('error-message');
+        // We insert the error right after the evaluated field
+        evaluatedElement.parentNode.insertBefore(errorContainer, evaluatedElement.nextSibling);
     }
 };
 
 const validateCCZip = function () {
     if (ccZip.value.length !== 5) {
-        if (ccZip.nextElementSibling !== null) {
-            return
-        }
-        ccZip.classList.add('input-error');
-        ccZip.classList.remove('input-validated');
-        errorMessage(ccZip, 'Please add a 5 digit ZIP code.');
+        validate(false, ccZip, 'wrong-postal-code', 'Please add a 5 digit ZIP code.');
     } else {
-        if (ccZip.nextElementSibling === null) {
-            return
-        }
-        ccZip.classList.remove('input-error');
-        ccZip.classList.add('input-validated');
-        removeErrorMessage(ccZip);
-    }
+        validate(true, ccZip);
+    };
 };
 
 const validateCvv = function () {
     if (ccCvv.value.length !== 3) {
-        if (ccCvv.nextElementSibling !== null) {
-            return
-        }
-        ccCvv.classList.add('input-error');
-        ccCvv.classList.remove('input-validated');
-        errorMessage(ccCvv, 'Please add a 3 digit CVV code.');
+        validate(false, ccCvv, 'wrong-cvv', 'Please add a 3 digit CVV code.');
     } else {
-        if (ccCvv.nextElementSibling === null) {
-            return
-        }
-        ccCvv.classList.remove('input-error');
-        ccCvv.classList.add('input-validated');
-        removeErrorMessage(ccCvv);
+        validate(true, ccCvv);
     }
 };
 
+nameField.addEventListener('blur', validateName);
+emailField.addEventListener('blur', validateEmail);
 ccNumber.addEventListener('blur', validateCCNumber);
 ccZip.addEventListener('blur', validateCCZip);
 ccCvv.addEventListener('blur', validateCvv);
 
 submitButton.addEventListener('click', function (event) {
+    validateName();
+    validateEmail();
     validateActivities();
     validatePayment();
     event.preventDefault();
