@@ -29,3 +29,7 @@ select {
 	margin-top: 0;
 	padding: 0.5rem; 
 }
+
+.payment-data {
+	margin-top: 1.25rem;
+}
