@@ -166,16 +166,4 @@ button:hover {
 	header {
 		padding: 4.65em 0 2.5em;
 	}
-	.col {
-		float: left;
-	}
-	.col + .col {
-		margin-left: 2.5%;
-	}
-	.col-3 {
-		width: 23%;
-	}
-	.col-6 {
-		width: 49%;
-	}
 }

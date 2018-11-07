@@ -7,19 +7,20 @@
   <title>Register for Full Stack Conf</title>
   <link rel="stylesheet" href="css/normalize.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/custom-styles.css">
 </head>
 
 <body>
-  <div class="container">
+  <div class="container pb-5">
 
     <header>
       <span>Register for</span>
       <h1>Full Stack Conf</h1>
     </header>
 
-    <form action="index.html" method="post">
+    <form id="registration-form" action="index.html" method="post">
 
       <fieldset>
         <legend>Basic Info</legend>
@@ -40,8 +41,8 @@
           <option value="other">Other</option>
         </select>
 
-        <input type="text" id="other-title" name="user_other-title" placeholder="Your Job Role">
-        
+        <input type="text" id="other-title" name="user_other-title" placeholder="Your Job Role" class="mt-3">
+
       </fieldset>
 
       <fieldset class="shirt">
@@ -102,45 +103,50 @@
         </select>
 
         <div id="credit-card" class="credit-card">
-
-          <div class="col-6 col">
-            <label for="cc-num">Card Number:</label>
-            <input id="cc-num" name="user_cc-num" type="text">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="cc-num">Card Number:</label>
+              <input id="cc-num" name="user_cc-num" type="text">
+            </div>
+            <div class="col-md-3">
+              <label for="zip">Zip Code:</label>
+              <input id="zip" name="user_zip" type="text">
+            </div>
+            <div class="col-md-3">
+              <label for="cvv">CVV:</label>
+              <input id="cvv" name="user_cvv" type="text">
+            </div>
           </div>
 
-          <div class="col-3 col">
-            <label for="zip">Zip Code:</label>
-            <input id="zip" name="user_zip" type="text">
+          <div class="row">
+            <div class="col">
+              <label for="exp-month">Expiration Date:</label>
+              <select id="exp-month" name="user_exp-month">
+                <option value="1">1 - January</option>
+                <option value="2">2 - February</option>
+                <option value="3">3 - March</option>
+                <option value="4">4 - April</option>
+                <option value="5">5 - May</option>
+                <option value="6">6 - June</option>
+                <option value="7">7 - July</option>
+                <option value="8">8 - August</option>
+                <option value="9">9 - September</option>
+                <option value="10">10 - October</option>
+                <option value="11">11 - November</option>
+                <option value="12">12 - December</option>
+              </select>
+            </div>
+            <div class="col">
+              <label for="exp-year">Expiration Year:</label>
+              <select id="exp-year" name="user_exp-year">
+                <option value="2016">2016</option>
+                <option value="2017">2017</option>
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+              </select>
+            </div>
           </div>
-
-          <div class="col-3 col">
-            <label for="cvv">CVV:</label>
-            <input id="cvv" name="user_cvv" type="text">
-          </div>
-
-          <label for="exp-month">Expiration Date:</label>
-          <select id="exp-month" name="user_exp-month">
-            <option value="1">1 - January</option>
-            <option value="2">2 - February</option>
-            <option value="3">3 - March</option>
-            <option value="4">4 - April</option>
-            <option value="5">5 - May</option>
-            <option value="6">6 - June</option>
-            <option value="7">7 - July</option>
-            <option value="8">8 - August</option>
-            <option value="9">9 - September</option>
-            <option value="10">10 - October</option>
-            <option value="11">11 - November</option>
-            <option value="12">12 - December</option>
-          </select>
-          <label for="exp-year">Expiration Year:</label>
-          <select id="exp-year" name="user_exp-year">
-            <option value="2016">2016</option>
-            <option value="2017">2017</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>
-          </select>
         </div>
 
         <div id="paypal">
@@ -153,11 +159,10 @@
             Due to the nature of exchanging Bitcoin, all Bitcoin transactions will be final.</p>
         </div>
 
-      </fieldset>
-
-      <button type="submit">Register</button>
-
+      </fieldset>   
     </form>
+
+    <button form="registration-form" class="btn btn-primary btn-block mt-5" type="submit">Register</button>
 
   </div>
 </body>
