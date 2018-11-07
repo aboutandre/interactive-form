@@ -160,7 +160,7 @@ nameField.addEventListener('blur', function () {
         }
         nameField.classList.remove('input-validated');
         nameField.classList.add('input-error');
-        errorMessage(nameField, 'Please add a name');
+        errorMessage(nameField, 'Please add a name.');
     } else {
         if (!nameField.nextElementSibling.classList.contains('error-message')) {
             return
@@ -180,7 +180,7 @@ emailField.addEventListener('blur', function () {
         }
         emailField.classList.remove('input-validated');
         emailField.classList.add('input-error');
-        errorMessage(emailField, 'Please add a valid email');
+        errorMessage(emailField, 'Please add a valid email.');
     } else {
         if (!emailField.nextElementSibling.classList.contains('error-message')) {
             return
@@ -221,13 +221,20 @@ const validatePayment = function () {
 };
 
 const validateCCNumber = function () {
-    if (13 > ccNumber.value.length || ccNumber.value.length > 16 || ccNumber.value === null ) {
+    if (ccNumber.value.length <= 0) {
         if (ccNumber.nextElementSibling !== null) {
             return
         }
         ccNumber.classList.add('input-error');
         ccNumber.classList.remove('input-validated');
-        errorMessage(ccNumber, 'Please add a card with 13 to 16 digits');
+        errorMessage(ccNumber, 'Please enter a credit card number.');
+    } else if (13 > ccNumber.value.length || ccNumber.value.length > 16) {
+        if (ccNumber.nextElementSibling !== null) {
+            return
+        }
+        ccNumber.classList.add('input-error');
+        ccNumber.classList.remove('input-validated');
+        errorMessage(ccNumber, 'Please add a card with 13 to 16 digits.');
     } else {
         if (ccNumber.nextElementSibling === null) {
             return
@@ -245,7 +252,7 @@ const validateCCZip = function () {
         }
         ccZip.classList.add('input-error');
         ccZip.classList.remove('input-validated');
-        errorMessage(ccZip, 'Please add a 5 digit ZIP code');
+        errorMessage(ccZip, 'Please add a 5 digit ZIP code.');
     } else {
         if (ccZip.nextElementSibling === null) {
             return
@@ -263,7 +270,7 @@ const validateCvv = function () {
         }
         ccCvv.classList.add('input-error');
         ccCvv.classList.remove('input-validated');
-        errorMessage(ccCvv, 'Please add a 3 digit CVV code');
+        errorMessage(ccCvv, 'Please add a 3 digit CVV code.');
     } else {
         if (ccCvv.nextElementSibling === null) {
             return
