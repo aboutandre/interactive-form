@@ -4,6 +4,10 @@ const otherJobTitle = document.getElementById('other-title');
 const tShirtColors = document.getElementById('colors-js-puns');
 const tShirtDesignSelection = document.getElementById('design');
 const tShirtColorsTemplate = tShirtColors.innerHTML;
+const paymentMethod = document.getElementById('payment');
+const paymentCC = document.getElementById('credit-card');
+const paymentPayPal = document.getElementById('paypal');
+const paymentBitcoin = document.getElementById('bitcoin');
 
 const activities = document.getElementsByClassName('activities')[0];
 const activityConference = document.getElementsByName('all')[0];
@@ -103,9 +107,31 @@ activities.addEventListener('change', function () {
     appendSum(price);
 });
 
+const defaultPayment = function() {
+    paymentMethod.value = 'credit card'
+}
+
+paymentMethod.addEventListener('change', function () {
+    function hidePaymentMethods () {
+        hideElement(paymentCC);
+        hideElement(paymentPayPal);
+        hideElement(paymentBitcoin);
+    };
+     if (this.value === 'credit card') {
+        hidePaymentMethods();
+        showElement(paymentCC);
+    } else if (this.value === 'paypal') {
+        hidePaymentMethods();
+        showElement(paymentPayPal);
+    } else {
+        hidePaymentMethods();
+        showElement(paymentBitcoin);
+    }
+});
 
 // We initialize all our functions
 window.onload = initialFocus();
+window.onload = defaultPayment();
 hideElement(otherJobTitle);
 hideElement(tShirtColors);
 parallelTracks(activityJSFrameworks, activityExpress);
