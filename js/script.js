@@ -1,4 +1,5 @@
 const nameField = document.getElementById('name');
+const emailField = document.getElementById('mail');
 const jobTitleSelection = document.getElementById('title');
 const otherJobTitle = document.getElementById('other-title');
 const tShirtColors = document.getElementById('colors-js-puns');
@@ -88,7 +89,7 @@ tShirtDesignSelection.addEventListener('change', function () {
     }
 });
 
-const appendSum = function(totalPrice) {
+const appendSum = function (totalPrice) {
     sumContainer.innerHTML = '';
     const sum = `<h3 class="total-sum">Total: $${totalPrice}</h3>`
     sumContainer.innerHTML = sum;
@@ -107,17 +108,17 @@ activities.addEventListener('change', function () {
     appendSum(price);
 });
 
-const defaultPayment = function() {
+const defaultPayment = function () {
     paymentMethod.value = 'credit card'
 }
 
 paymentMethod.addEventListener('change', function () {
-    function hidePaymentMethods () {
+    function hidePaymentMethods() {
         hideElement(paymentCC);
         hideElement(paymentPayPal);
         hideElement(paymentBitcoin);
     };
-     if (this.value === 'credit card') {
+    if (this.value === 'credit card') {
         hidePaymentMethods();
         showElement(paymentCC);
     } else if (this.value === 'paypal') {
@@ -129,25 +130,42 @@ paymentMethod.addEventListener('change', function () {
     }
 });
 
-const errorMessage = function(errorField, errorText) {
+const errorMessage = function (errorField, errorText) {
     const textContent = document.createElement('p');
     textContent.innerHTML = errorText;
     textContent.classList.add('error-message');
     errorField.parentNode.insertBefore(textContent, errorField.nextSibling);
 };
 
-const removeErrorMessage = function(inputId) {
+const removeErrorMessage = function (inputId) {
     inputId.parentNode.removeChild(inputId.nextSibling)
 }
 
-nameField.addEventListener('blur', function() {
+nameField.addEventListener('blur', function () {
     if (nameField.value === '' || nameField.value === null) {
         if (this.nextElementSibling.classList.contains('error-message')) {
-            return  
+            return
         }
         this.classList.remove('input-validated');
         this.classList.add('input-error');
-        errorMessage(nameField, 'Please add a name');
+        errorMessage(this, 'Please add a name');
+    } else {
+        this.classList.remove('input-error');
+        this.classList.add('input-validated');
+        removeErrorMessage(this);
+    }
+});
+
+emailField.addEventListener('blur', function () {
+    isValid = this.checkValidity();
+
+    if (!isValid || this.value === '') {
+        if (this.nextElementSibling.classList.contains('error-message')) {
+            return
+        }
+        this.classList.remove('input-validated');
+        this.classList.add('input-error');
+        errorMessage(this, 'Please add a valid email');
     } else {
         this.classList.remove('input-error');
         this.classList.add('input-validated');
