@@ -9,6 +9,9 @@ const paymentMethod = document.getElementById('payment');
 const paymentCC = document.getElementById('credit-card');
 const paymentPayPal = document.getElementById('paypal');
 const paymentBitcoin = document.getElementById('bitcoin');
+const ccNumber = document.getElementById('cc-num');
+const ccZip = document.getElementById('zip');
+const ccCvv = document.getElementById('cvv');
 
 const activities = document.getElementsByClassName('activities')[0];
 const activityConference = document.getElementsByName('all')[0];
@@ -113,18 +116,20 @@ activities.addEventListener('change', function () {
 });
 
 const defaultPayment = function () {
-    paymentMethod.value = 'credit card'
+    hidePaymentMethods();
+    paymentMethod.value = 'credit card';
+    showElement(paymentCC);
+}
+
+const hidePaymentMethods = function () {
+    hideElement(paymentCC);
+    hideElement(paymentPayPal);
+    hideElement(paymentBitcoin);
 }
 
 paymentMethod.addEventListener('change', function () {
-    function hidePaymentMethods() {
-        hideElement(paymentCC);
-        hideElement(paymentPayPal);
-        hideElement(paymentBitcoin);
-    };
-    if (this.value === 'credit card') {
-        hidePaymentMethods();
-        showElement(paymentCC);
+     if (this.value === 'credit card') {
+        defaultPayment();
     } else if (this.value === 'paypal') {
         hidePaymentMethods();
         showElement(paymentPayPal);
@@ -138,42 +143,51 @@ const errorMessage = function (errorField, errorText) {
     const textContent = document.createElement('p');
     textContent.innerHTML = errorText;
     textContent.classList.add('error-message');
+    textContent.id = errorField.id + '-error';
     errorField.parentNode.insertBefore(textContent, errorField.nextSibling);
 };
 
-const removeErrorMessage = function (inputId) {
-    inputId.parentNode.removeChild(inputId.nextElementSibling)
+const removeErrorMessage = function (errorField) {
+    const errorMessageId = errorField.id + '-error';
+    const errorMessage = document.getElementById(errorMessageId); 
+    errorField.parentNode.removeChild(errorMessage);
 }
 
 nameField.addEventListener('blur', function () {
     if (nameField.value === '' || nameField.value === null) {
-        if (this.nextElementSibling.classList.contains('error-message')) {
+        if (nameField.nextElementSibling.classList.contains('error-message')) {
             return
         }
-        this.classList.remove('input-validated');
-        this.classList.add('input-error');
-        errorMessage(this, 'Please add a name');
+        nameField.classList.remove('input-validated');
+        nameField.classList.add('input-error');
+        errorMessage(nameField, 'Please add a name');
     } else {
-        this.classList.remove('input-error');
-        this.classList.add('input-validated');
-        removeErrorMessage(this);
+        if (!nameField.nextElementSibling.classList.contains('error-message')) {
+            return
+        }
+        nameField.classList.remove('input-error');
+        nameField.classList.add('input-validated');
+        removeErrorMessage(nameField);
     }
 });
 
 emailField.addEventListener('blur', function () {
-    isValid = this.checkValidity();
+    isValid = emailField.checkValidity();
 
-    if (!isValid || this.value === '') {
-        if (this.nextElementSibling.classList.contains('error-message')) {
+    if (!isValid || emailField.value === '') {
+        if (emailField.nextElementSibling.classList.contains('error-message')) {
             return
         }
-        this.classList.remove('input-validated');
-        this.classList.add('input-error');
-        errorMessage(this, 'Please add a valid email');
+        emailField.classList.remove('input-validated');
+        emailField.classList.add('input-error');
+        errorMessage(emailField, 'Please add a valid email');
     } else {
-        this.classList.remove('input-error');
-        this.classList.add('input-validated');
-        removeErrorMessage(this);
+        if (!emailField.nextElementSibling.classList.contains('error-message')) {
+            return
+        }
+        emailField.classList.remove('input-error');
+        emailField.classList.add('input-validated');
+        removeErrorMessage(emailField);
     }
 });
 
@@ -198,8 +212,75 @@ const validateActivities = function () {
     }
 };
 
+const validatePayment = function () {
+    if (paymentMethod.value === 'credit card') {
+        validateCCNumber();
+        validateCCZip();
+        validateCvv();
+    }
+};
+
+const validateCCNumber = function () {
+    if (13 > ccNumber.value.length || ccNumber.value.length > 16 || ccNumber.value === null ) {
+        if (ccNumber.nextElementSibling !== null) {
+            return
+        }
+        ccNumber.classList.add('input-error');
+        ccNumber.classList.remove('input-validated');
+        errorMessage(ccNumber, 'Please add a card with 13 to 16 digits');
+    } else {
+        if (ccNumber.nextElementSibling === null) {
+            return
+        }
+        ccNumber.classList.remove('input-error');
+        ccNumber.classList.add('input-validated');
+        removeErrorMessage(ccNumber);
+    }
+};
+
+const validateCCZip = function () {
+    if (ccZip.value.length !== 5) {
+        if (ccZip.nextElementSibling !== null) {
+            return
+        }
+        ccZip.classList.add('input-error');
+        ccZip.classList.remove('input-validated');
+        errorMessage(ccZip, 'Please add a 5 digit ZIP code');
+    } else {
+        if (ccZip.nextElementSibling === null) {
+            return
+        }
+        ccZip.classList.remove('input-error');
+        ccZip.classList.add('input-validated');
+        removeErrorMessage(ccZip);
+    }
+};
+
+const validateCvv = function () {
+    if (ccCvv.value.length !== 3) {
+        if (ccCvv.nextElementSibling !== null) {
+            return
+        }
+        ccCvv.classList.add('input-error');
+        ccCvv.classList.remove('input-validated');
+        errorMessage(ccCvv, 'Please add a 3 digit CVV code');
+    } else {
+        if (ccCvv.nextElementSibling === null) {
+            return
+        }
+        ccCvv.classList.remove('input-error');
+        ccCvv.classList.add('input-validated');
+        removeErrorMessage(ccCvv);
+    }
+};
+
+ccNumber.addEventListener('blur', validateCCNumber);
+ccZip.addEventListener('blur', validateCCZip);
+ccCvv.addEventListener('blur', validateCvv);
+
 submitButton.addEventListener('click', function (event) {
     validateActivities();
+    validatePayment();
     event.preventDefault();
 });
 
