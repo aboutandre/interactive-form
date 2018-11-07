@@ -1,3 +1,7 @@
+select {
+	margin-bottom: 0;
+}
+
 .is-hidden {
 	display: none;
 }
@@ -24,4 +28,8 @@
 	color: white;
 	margin-top: 0;
 	padding: 0.5rem; 
+}
+
+.payment-data {
+	margin-top: 1.25rem;
 }
