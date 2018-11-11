@@ -204,6 +204,22 @@ const validate = function (passed, evaluatedElement, errorName = 0, errorMessage
     }
 };
 
+const isNumber = function (evt) {
+    evt = (evt) ? evt : window.event;
+    let charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
+
+const validateIsNumber = function (event) {
+    if (!isNumber(event)) {
+        event.preventDefault();
+        return false;
+    }
+}
+
 // Function to validate if the name is not empty
 const validateName = function () {
     if (nameField.value === '' || nameField.value === null) {
@@ -221,7 +237,7 @@ const validateEmail = function () {
     if (!isValid) {
         validate(false, emailField, 'invalid-format', 'Please add a valid email.');
         // If it's empty
-    } else if (nameField.value === '' || nameField.value === null) {
+    } else if (emailField.value === '' || emailField.value === null) {
         validate(false, emailField, 'empty-field', 'Please add an email.');
     } else {
         validate(true, emailField);
@@ -292,8 +308,26 @@ const validateCvv = function () {
 nameField.addEventListener('blur', validateName);
 emailField.addEventListener('blur', validateEmail);
 ccNumber.addEventListener('blur', validateCCNumber);
-ccZip.addEventListener('blur', validateCCZip);
 ccCvv.addEventListener('blur', validateCvv);
+ccZip.addEventListener('blur', validateCCZip);
+
+// For the credit card, zip and cvv we listen to key presses and allow only numbers
+// If the user tries to type anything but a number we show an error message
+ccNumber.addEventListener('keypress', event => {
+    if (!validateIsNumber(event)) {
+        validate(false, ccNumber, 'cc-not-numbers', 'Please add numbers only!');
+    }
+});
+ccZip.addEventListener('keypress', event => {
+    if (!validateIsNumber(event)) {
+        validate(false, ccZip, 'zip-not-numbers', 'Please add numbers only!');
+    }
+});
+ccCvv.addEventListener('keypress', event => {
+    if (!validateIsNumber(event)) {
+        validate(false, ccCvv, 'cvv-not-numbers', 'Please add numbers only!');
+    }
+});
 
 // The submit button validates all the fields and checkboxes on being clicked
 submitButton.addEventListener('click', function (event) {
@@ -301,7 +335,10 @@ submitButton.addEventListener('click', function (event) {
     validateEmail();
     validateActivities();
     validatePayment();
-    event.preventDefault();
+    if (document.querySelector('.error-message') !== null) {
+        // If errors are present we prevent the form to submit
+        event.preventDefault();
+    }
 });
 
 // We initialize all our functions
