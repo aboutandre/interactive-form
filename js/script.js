@@ -150,14 +150,14 @@ const defaultPayment = function () {
     paymentMethod.value = 'credit card';
     // And we show the credit card relevant fields
     showElement(paymentCC);
-}
+};
 
 // In this function we hide all the payment methods
 const hidePaymentMethods = function () {
     hideElement(paymentCC);
     hideElement(paymentPayPal);
     hideElement(paymentBitcoin);
-}
+};
 
 // We listen for changes in the payment dropdown 
 paymentMethod.addEventListener('change', function () {
@@ -204,21 +204,28 @@ const validate = function (passed, evaluatedElement, errorName = 0, errorMessage
     }
 };
 
-const isNumber = function (evt) {
-    evt = (evt) ? evt : window.event;
-    let charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-    }
-    return true;
-}
-
 const validateIsNumber = function (event) {
-    if (!isNumber(event)) {
+    // We check if the number is an integer
+    let isNumber = isFinite(event.key);
+    // We prevent the user to type spaces
+    console.log('This is an integer: ' + isNumber);
+    if (event.which === 32) {
+        event.preventDefault();
+    }
+    // If the key pressed is an arrow or backspace we allow the input
+    else if (event.charCode === 0) {
+        return true
+    }
+    // If the key pressed is not an integer we return false
+    else if (!isNumber) {
         event.preventDefault();
         return false;
+    } 
+    // If what the user typed is a number we return true
+    else if (isNumber) {
+        return true;
     }
-}
+};
 
 // Function to validate if the name is not empty
 const validateName = function () {
@@ -243,6 +250,7 @@ const validateEmail = function () {
         validate(true, emailField);
     }
 };
+
 // Function to validate if any activity has been selected 
 const validateActivities = function () {
     // We create a variable that will change any *any* of the activities has been selected
@@ -269,13 +277,18 @@ const validatePayment = function () {
         validateCCNumber();
         validateCCZip();
         validateCvv();
+    // Otherwise we remove all errors from the fields before submitting
+    } else {
+        validate(true, ccNumber);
+        validate(true, ccCvv);
+        validate(true, ccZip);
     }
 };
 
 // Function to validate if the CC number is correct
 const validateCCNumber = function () {
     // If empty we show an error if the proper message
-    if (ccNumber.value.length <= 0) {
+    if (ccNumber.value.length < 0) {
         validate(false, ccNumber, 'empty-field', 'Please enter a credit card number.');
         // If the length of the number is not between 13 and 16 we show the proper message
     } else if (13 >= ccNumber.value.length || ccNumber.value.length >= 16) {
@@ -314,6 +327,7 @@ ccZip.addEventListener('blur', validateCCZip);
 // For the credit card, zip and cvv we listen to key presses and allow only numbers
 // If the user tries to type anything but a number we show an error message
 ccNumber.addEventListener('keypress', event => {
+    console.log('Im listening for events. This one is: '+ validateIsNumber(event));
     if (!validateIsNumber(event)) {
         validate(false, ccNumber, 'cc-not-numbers', 'Please add numbers only!');
     }
